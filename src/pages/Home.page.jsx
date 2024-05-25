@@ -1,4 +1,5 @@
-import React , {useState} from 'react';
+import React , {useEffect, useState} from 'react';
+import axios from 'axios';
 //components
 import EntertainmentCardSlider from '../components/Entertainment/EntertainmentCard.Component';
 import PosterSlider from '../components/PosterSlider/PosterSlider.Component';
@@ -11,6 +12,31 @@ const HomePage = () => {
     const[recommandedMovies, setRecommandedMovies] = useState([]);
     const[premierMovies, setPremierMovies] = useState([]);
     const[onlineStreamEvents, setOnlineStreamEvents] = useState([]);
+    
+    useEffect(() => {
+        const requestPopularMovies = async() => {
+            const getPopularMovies = await axios.get("/movie/popular");
+            setRecommandedMovies(getPopularMovies.data.results);
+        };
+        requestPopularMovies();
+    } , []); 
+
+    useEffect(() => {
+        const requestTopRatedMovies = async() => {
+            const getTopRatedMovies = await axios.get("/movie/top_rated");
+            setPremierMovies(getTopRatedMovies.data.results);
+        };
+        requestTopRatedMovies();
+    } , []);
+
+    useEffect(() => {
+        const requestUpcomingMovies = async() => {
+            const getUpcomingMovies = await axios.get("/movie/upcoming");
+            setOnlineStreamEvents(getUpcomingMovies.data.results);
+        };
+        requestUpcomingMovies();
+    } , []);
+
     return (
     <>
         <HeroCarsouel/>
@@ -32,13 +58,13 @@ const HomePage = () => {
                     <img src="https://assets-in.bmscdn.com/discovery-catalog/collections/tr:w-1440,h-120/premiere-banner-web-collection-202208191200.png" alt="Rupay" className="w-full h-full"/>
                 </div>
                 <PosterSlider title="Premiers"
-                subject = "Brand New release every Friday"
+                subtitle = "Brand New release every Friday"
                 posters ={premierMovies}
                 isDark ={true}/>
             </div>
             <div className='container mx-auto px-4 md:px-12 my-8 flex flex-col gap-3'>
                 <PosterSlider title="Online Streaming Events"
-                subject = "Best of events streaming online"
+                subtitle = "Best of events streaming online"
                 posters ={onlineStreamEvents}
                 isDark ={true}/>
             </div>
